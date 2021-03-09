@@ -1,44 +1,31 @@
 package com.dergtr.seek.fun;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 public class DoubleColorBall {
 
 
     public static void main(String[] args) {
-
-
         int[] red = randomBall(6, 1, 33);
         int[] blue = randomBall(1, 1, 16);
-
         System.out.println(Arrays.toString(red));
         System.out.println(Arrays.toString(blue));
-
-
     }
 
     private static int[] randomBall(int targetCount, int min, int max) {
-        return randomBall(targetCount, min, max, null);
-    }
-
-    private static int[] randomBall(int targetCount, int min, int max, Set<Integer> exclude) {
-        Set<Integer> ballSet = new HashSet<>();
-        Random random = new Random();
-        while (ballSet.size() < targetCount) {
-            int ballNum = random.nextInt(max - min + 1) + min;
-            if (exclude == null || !exclude.contains(ballNum)) {
-                ballSet.add(ballNum);
-            }
+        int[] ballPool = new int[max - min + 1];
+        for (int i = 0; i < ballPool.length; i++) {
+            ballPool[i] = min + i;
         }
         int[] ball = new int[targetCount];
-        int index = 0;
-        for (Integer ballNum : ballSet) {
-            ball[index] = ballNum;
-            index++;
+        Random random = new Random();
+        for (int i = 0; i < targetCount; i++) {
+            int ballIndex = random.nextInt(ballPool.length);
+            ball[i] = ballPool[ballIndex];
+            System.arraycopy(ballPool, ballIndex + 1, ballPool, ballIndex, ballPool.length - ballIndex - 1);
+            ballPool = Arrays.copyOf(ballPool, ballPool.length - 1);
         }
+        Arrays.sort(ball);
         return ball;
     }
 
